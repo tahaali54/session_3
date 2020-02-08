@@ -17,15 +17,28 @@ Future<WeatherDetail> fetchPost() async {
   }
 }
 
+class Weather {
+  final String desc;
+  Weather({this.desc});
+  factory Weather.fromJson(dynamic json) {
+    return Weather(
+      desc: json['description'],
+    );
+  }
+}
+
 class WeatherDetail {
   final Main main;
-  final String description;
+  final List description;
 
   WeatherDetail({this.main, this.description});
 
   factory WeatherDetail.fromJson(Map<String, dynamic> json) {
     return WeatherDetail(
       main: Main.fromJson(json['main']),
+      description: json['weather']
+          .map((listJson) => Weather.fromJson(listJson))
+          .toList(),
     );
   }
 }
