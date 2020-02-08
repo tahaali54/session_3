@@ -17,29 +17,32 @@ Future<WeatherDetail> fetchPost() async {
   }
 }
 
-class Weather {
+class WeatherDesc {
   final String desc;
-  Weather({this.desc});
-  factory Weather.fromJson(dynamic json) {
-    return Weather(
-      desc: json['description'],
+  WeatherDesc({this.desc});
+  factory WeatherDesc.fromJson(dynamic json) {
+    return WeatherDesc(
+      desc: json['description'] as String,
     );
+  }
+  @override
+  String toString() {
+    return '${desc[0].toUpperCase()}${desc.substring(1)}';
   }
 }
 
 class WeatherDetail {
   final Main main;
-  final List description;
+  List<WeatherDesc> weather = List();
 
-  WeatherDetail({this.main, this.description});
+  WeatherDetail({this.main, this.weather});
 
   factory WeatherDetail.fromJson(Map<String, dynamic> json) {
     return WeatherDetail(
-      main: Main.fromJson(json['main']),
-      description: json['weather']
-          .map((listJson) => Weather.fromJson(listJson))
-          .toList(),
-    );
+        main: Main.fromJson(json['main']),
+        weather: (json['weather'] as List)
+            .map((weatherDesc) => WeatherDesc.fromJson(weatherDesc))
+            .toList());
   }
 }
 
@@ -113,7 +116,7 @@ class _MyAppState extends State<MyApp> {
     String _lowest = (data.main.minTemp - 3).toString();
     String _highest = (data.main.maxTemp + 4).toString();
     String _feelsLike = data.main.feelsLike.toInt().toString();
-    String _desc = 'Sunny';
+    String _desc = data.weather.first.toString();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
