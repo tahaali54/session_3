@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<WeatherDetail> fetchPost() async {
-  final response = await http.get(
+Future<WeatherDetail> fetchWeather(http.Client client) async {
+  final response = await client.get(
       'http://api.openweathermap.org/data/2.5/weather?q=Karachi,pk&units=metric&APPID=0154ac07e7c0fc3b2556cc8e5da8ad48');
 
   if (response.statusCode == 200) {
@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    post = fetchPost();
+    post = fetchWeather(http.Client());
   }
 
   @override
@@ -130,7 +130,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 onPressed: () {
                   setState(() {
-                    post = fetchPost();
+                    post = fetchWeather(http.Client());
                   });
                 })),
         Expanded(child: Container()),
